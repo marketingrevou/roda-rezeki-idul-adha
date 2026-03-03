@@ -29,6 +29,20 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Google Sheets Integration
+
+This project can optionally mirror every spin to a Google Sheet so that you can analyze the data outside of Supabase.
+
+1. **Create a service account** in the Google Cloud console and grant it the `Sheets API` scope.
+2. Generate a JSON key and store the contents in the `GOOGLE_SERVICE_ACCOUNT_CREDENTIALS` environment variable (use [dotenv](https://github.com/motdotla/dotenv) or `.env.local`). Example:
+   ```dotenv
+   GOOGLE_SERVICE_ACCOUNT_CREDENTIALS='{"type":"service_account", ... }'
+   GOOGLE_SHEETS_ID=1FKCFxHlYnXcqU0BM2QESxgR3X44fV3BzcnesV8xGdCM
+   ```
+   Make sure the service account has access to the target spreadsheet (share the sheet with the account's email).
+3. The server will append rows with `[timestamp, email, result]` whenever a spin is saved.
+
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.

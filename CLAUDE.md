@@ -20,6 +20,10 @@ Create a `.env.local` file with:
 NEXT_PUBLIC_SUPABASE_URL=...
 SUPABASE_SERVICE_ROLE_KEY=...
 ADMIN_SECRET=...
+# (optional) Google Sheets service account JSON string
+# GOOGLE_SERVICE_ACCOUNT_CREDENTIALS='{"type":"service_account", ... }'
+# Spreadsheet ID for the results sheet
+# GOOGLE_SHEETS_ID=1FKCFxHlYnXcqU0BM2QESxgR3X44fV3BzcnesV8xGdCM
 ```
 
 ## Architecture

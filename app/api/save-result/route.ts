@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabase } from "@/lib/supabase";
 import { pickResult } from "@/lib/segments";
+import { appendRow } from "@/lib/sheets";
 
 export async function POST(req: NextRequest) {
   try {
@@ -51,6 +52,13 @@ export async function POST(req: NextRequest) {
         );
       }
       return NextResponse.json({ error: "Failed to save result" }, { status: 500 });
+    }
+
+    // also append to Google Sheet (fire-and-forget)
+    try {
+      await appendRow([new Date().toISOString(), normalizedEmail, label]);
+    } catch (sheetErr) {
+      console.error("Failed to append row to Google Sheets:", sheetErr);
     }
 
     return NextResponse.json({ result: label, segmentIndex });
