@@ -100,7 +100,7 @@ export default function AdminPage() {
           >
             Admin — Roda Rezeki RevoU
           </h1>
-          <p className="text-blue-300 text-sm">Semua hasil spin peserta Ramadan 2025</p>
+          <p className="text-blue-300 text-sm">Semua hasil spin peserta Ramadan 2026</p>
         </div>
 
         {/* Auth form */}
