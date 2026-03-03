@@ -6,6 +6,7 @@ import { SEGMENTS } from "@/lib/segments";
 interface WheelProps {
   targetIndex: number | null;
   spinning: boolean;
+  freeSpin: boolean;
   onSpinComplete: () => void;
 }
 
@@ -14,6 +15,7 @@ const SEGMENT_ANGLE = FULL_CIRCLE / SEGMENTS.length;
 const GOLD = "#FFDE3D";
 const SPIN_DURATION = 5000;
 const FULL_ROTATIONS = 7;
+const FREE_SPIN_SPEED = 0.006; // radians per frame
 
 function easeOut(t: number): number {
   return 1 - Math.pow(1 - t, 3);
@@ -28,13 +30,14 @@ function parseLabel(label: string): { big: string; small: string } {
   return { big: pct, small: rest };
 }
 
-export default function Wheel({ targetIndex, spinning, onSpinComplete }: WheelProps) {
+export default function Wheel({ targetIndex, spinning, freeSpin, onSpinComplete }: WheelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const currentAngleRef = useRef(0);
   const animRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const startAngleRef = useRef(0);
   const targetAngleRef = useRef(0);
+  const freeSpinRef = useRef(false);
 
   const drawWheel = useCallback((angle: number) => {
     const canvas = canvasRef.current;
@@ -197,7 +200,29 @@ export default function Wheel({ targetIndex, spinning, onSpinComplete }: WheelPr
     document.fonts.ready.then(() => drawWheel(0));
   }, [drawWheel]);
 
-  // Spin animation
+  // Phase 1: free spin — constant speed loop while waiting for API
+  useEffect(() => {
+    freeSpinRef.current = freeSpin;
+
+    if (!freeSpin) return;
+
+    if (animRef.current) cancelAnimationFrame(animRef.current);
+
+    const loop = () => {
+      if (!freeSpinRef.current) return;
+      currentAngleRef.current += FREE_SPIN_SPEED;
+      drawWheel(currentAngleRef.current);
+      animRef.current = requestAnimationFrame(loop);
+    };
+
+    animRef.current = requestAnimationFrame(loop);
+
+    return () => {
+      if (animRef.current) cancelAnimationFrame(animRef.current);
+    };
+  }, [freeSpin, drawWheel]);
+
+  // Phase 2: landing — decelerate to target segment
   useEffect(() => {
     if (!spinning || targetIndex === null) return;
 

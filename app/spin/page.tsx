@@ -32,12 +32,12 @@ const BG =
 export default function SpinPage() {
   const router = useRouter();
   const [email, setEmail] = useState<string | null>(null);
+  const [freeSpin, setFreeSpin] = useState(false);
   const [spinning, setSpinning] = useState(false);
   const [targetIndex, setTargetIndex] = useState<number | null>(null);
   const [result, setResult] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [hasSpun, setHasSpun] = useState(false);
 
   useEffect(() => {
@@ -55,9 +55,12 @@ export default function SpinPage() {
   }, []);
 
   async function handleSpin() {
-    if (!email || spinning || hasSpun || loading) return;
+    if (!email || freeSpin || spinning || hasSpun) return;
     setError("");
-    setLoading(true);
+    setHasSpun(true);
+
+    // Start wheel spinning immediately — Phase 1
+    setFreeSpin(true);
 
     try {
       const res = await fetch("/api/save-result", {
@@ -69,24 +72,28 @@ export default function SpinPage() {
       const data = await res.json();
 
       if (res.status === 409) {
+        setFreeSpin(false);
         setResult(data.result);
         setError("Email ini sudah pernah putar roda.");
         return;
       }
 
       if (!res.ok) {
+        setFreeSpin(false);
+        setHasSpun(false);
         setError("Terjadi kesalahan. Coba lagi.");
         return;
       }
 
+      // Stop free spin, trigger landing — Phase 2
+      setFreeSpin(false);
       setResult(data.result);
       setTargetIndex(data.segmentIndex);
-      setHasSpun(true);
       setSpinning(true);
     } catch {
+      setFreeSpin(false);
+      setHasSpun(false);
       setError("Tidak dapat terhubung. Periksa koneksimu.");
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -280,6 +287,7 @@ export default function SpinPage() {
           <Wheel
             targetIndex={targetIndex}
             spinning={spinning}
+            freeSpin={freeSpin}
             onSpinComplete={handleSpinComplete}
           />
         </div>
@@ -302,25 +310,21 @@ export default function SpinPage() {
         {!hasSpun && (
           <button
             onClick={handleSpin}
-            disabled={spinning || loading}
-            className="px-10 py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed glow-border"
+            className="px-10 py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 glow-border"
             style={{
-              background:
-                spinning || loading
-                  ? "rgba(255,222,61,0.3)"
-                  : "linear-gradient(135deg, #FFDE3D, #FFB800)",
+              background: "linear-gradient(135deg, #FFDE3D, #FFB800)",
               color: "#0a1e3d",
               boxShadow: "0 4px 28px rgba(255,222,61,0.45)",
               minWidth: "200px",
               letterSpacing: "0.05em",
             }}
           >
-            {loading ? "Memuat..." : spinning ? "Berputar..." : "Putar!"}
+            Putar!
           </button>
         )}
 
         {/* Hint */}
-        {!hasSpun && !spinning && !loading && (
+        {!hasSpun && (
           <p className="text-xs text-blue-300 text-center">
             Kamu hanya bisa memutar roda <strong className="text-white">1 kali</strong>.
           </p>
