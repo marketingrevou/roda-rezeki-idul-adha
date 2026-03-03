@@ -3,25 +3,103 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy: #0f0a2e;
+  --gold: #FFDE3D;
+  --gold-dark: #B8860B;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), 'Poppins', sans-serif;
+  background-color: var(--navy);
+  color: white;
+  min-height: 100vh;
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .font-poppins {
+    font-family: var(--font-poppins), 'Poppins', sans-serif;
   }
+}
+
+/* Twinkling star animation */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.3); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+.star-item {
+  position: fixed;
+  width: 3px;
+  height: 3px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle var(--duration, 3s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Crescent moon shape */
+.crescent {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  background: var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(255, 222, 61, 0.4);
+}
+
+.crescent::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 10px;
+  width: 38px;
+  height: 38px;
+  background: var(--navy);
+  border-radius: 50%;
+}
+
+/* Gold gradient text */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #FFDE3D, #FFB800, #FFDE3D);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animated gold glow border */
+@keyframes borderGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(255, 222, 61, 0.3), 0 0 0 1px rgba(255,222,61,0.3); }
+  50% { box-shadow: 0 0 25px rgba(255, 222, 61, 0.6), 0 0 0 1px rgba(255,222,61,0.6); }
+}
+
+.glow-border {
+  animation: borderGlow 2.5s ease-in-out infinite;
+}
+
+/* Lantern float */
+.lantern-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Scroll bar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0f0a2e;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 222, 61, 0.4);
+  border-radius: 3px;
 }
