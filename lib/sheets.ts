@@ -1,8 +1,8 @@
-import { google } from "googleapis";
+import { google, Auth } from "googleapis";
 
 const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
 
-let cachedAuth: google.auth.GoogleAuth | null = null;
+let cachedAuth: Auth.GoogleAuth | null = null;
 
 function getAuth() {
   if (cachedAuth) return cachedAuth;
@@ -26,9 +26,9 @@ function getAuth() {
 
 export async function appendRow(values: unknown[]) {
   const auth = getAuth();
-  const client = await auth.getClient();
 
-  const sheets = google.sheets({ version: "v4", auth: client });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sheets = google.sheets({ version: "v4", auth: auth as any });
   const spreadsheetId = process.env.GOOGLE_SHEETS_ID;
   if (!spreadsheetId) {
     throw new Error("Missing GOOGLE_SHEETS_ID in environment");
