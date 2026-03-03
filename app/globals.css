@@ -87,9 +87,20 @@ body {
   animation: borderGlow 2.5s ease-in-out infinite;
 }
 
-/* Lantern float */
+/* Lantern float (crescent) */
 .lantern-float {
   animation: float 4s ease-in-out infinite;
+}
+
+/* Lantern pendulum sway */
+@keyframes lanternSway {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+
+.lantern-sway {
+  animation: lanternSway 4s ease-in-out infinite;
+  transform-origin: top center;
 }
 
 /* Scroll bar styling */

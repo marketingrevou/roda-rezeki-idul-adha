@@ -15,6 +15,9 @@ const config: Config = {
       },
       fontFamily: {
         poppins: ["var(--font-poppins)", "Poppins", "sans-serif"],
+        cinzel: ["var(--font-cinzel)", "serif"],
+        "cinzel-decorative": ["var(--font-cinzel-decorative)", "serif"],
+        pacifico: ["var(--font-pacifico)", "cursive"],
       },
     },
   },

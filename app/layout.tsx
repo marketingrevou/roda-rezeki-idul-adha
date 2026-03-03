@@ -1,11 +1,29 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Poppins, Cinzel_Decorative, Cinzel, Pacifico } from "next/font/google";
 import "./globals.css";
 
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
   variable: "--font-poppins",
+});
+
+const cinzelDecorative = Cinzel_Decorative({
+  subsets: ["latin"],
+  weight: ["700"],
+  variable: "--font-cinzel-decorative",
+});
+
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  weight: ["400", "600"],
+  variable: "--font-cinzel",
+});
+
+const pacifico = Pacifico({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-pacifico",
 });
 
 export const metadata: Metadata = {
@@ -20,7 +38,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id">
-      <body className={`${poppins.variable} font-poppins antialiased`}>
+      <body className={`${poppins.variable} ${cinzelDecorative.variable} ${cinzel.variable} ${pacifico.variable} font-poppins antialiased`}>
         {children}
       </body>
     </html>
