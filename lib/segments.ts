@@ -8,31 +8,31 @@ export interface Segment {
 export const SEGMENTS: Segment[] = [
   {
     label: "Diskon 50%",
-    probability: 10,
+    probability: 0,
     color: "#E8730A",
     textColor: "#FFDE3D",
   },
   {
     label: "Diskon 40%",
-    probability: 10,
+    probability: 0,
     color: "#0a4a62",
     textColor: "#FFDE3D",
   },
   {
     label: "Diskon 30% + BNSP",
-    probability: 35,
+    probability: 0,
     color: "#0e2255",
     textColor: "#FFDE3D",
   },
   {
     label: "Diskon 30% + AI Video",
-    probability: 35,
+    probability: 30,
     color: "#1a3575",
     textColor: "#FFDE3D",
   },
   {
     label: "Diskon 25% + BNSP + AI Video",
-    probability: 10,
+    probability: 70,
     color: "#0d3a52",
     textColor: "#FFDE3D",
   },
