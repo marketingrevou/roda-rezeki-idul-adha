@@ -7,48 +7,90 @@ export interface Segment {
 
 export const SEGMENTS: Segment[] = [
   {
-    label: "Diskon 50%",
-    probability: 0,
+    label: "BNSP + AI Free Learning + Starter Kit",
+    probability: 50,
     color: "#E8730A",
     textColor: "#FFDE3D",
   },
   {
-    label: "Diskon 40%",
-    probability: 0,
+    label: "BNSP + Starter Kit",
+    probability: 25,
     color: "#1a5c1a",
     textColor: "#FFDE3D",
   },
   {
-    label: "Diskon 30% + BNSP",
-    probability: 0,
+    label: "BNSP + AI Free Learning",
+    probability: 25,
     color: "#0d3b0d",
     textColor: "#FFDE3D",
   },
   {
-    label: "Diskon 30% + AI Video",
-    probability: 25,
+    label: "Diskon 50%",
+    probability: 0,
     color: "#2d5a1a",
     textColor: "#FFDE3D",
   },
   {
-    label: "Diskon 25% + BNSP + AI Video",
-    probability: 75,
+    label: "BNSP",
+    probability: 0,
     color: "#1a4010",
     textColor: "#FFDE3D",
   },
 ];
 
-export function pickResult(): { label: string; segmentIndex: number } {
+export const SWE_SEGMENTS: Segment[] = [
+  {
+    label: "Jaminan refund 6 juta",
+    probability: 10,
+    color: "#E8730A",
+    textColor: "#FFDE3D",
+  },
+  {
+    label: "Jaminan refund 4.5 juta",
+    probability: 30,
+    color: "#1a5c1a",
+    textColor: "#FFDE3D",
+  },
+  {
+    label: "Jaminan refund 3 juta",
+    probability: 60,
+    color: "#0d3b0d",
+    textColor: "#FFDE3D",
+  },
+  {
+    label: "Diskon 50%",
+    probability: 0,
+    color: "#2d5a1a",
+    textColor: "#FFDE3D",
+  },
+  {
+    label: "BNSP",
+    probability: 0,
+    color: "#1a4010",
+    textColor: "#FFDE3D",
+  },
+];
+
+function pickFromSegments(segments: Segment[]): { label: string; segmentIndex: number } {
   const rand = Math.random() * 100;
   let cumulative = 0;
-  for (let i = 0; i < SEGMENTS.length; i++) {
-    cumulative += SEGMENTS[i].probability;
+  for (let i = 0; i < segments.length; i++) {
+    cumulative += segments[i].probability;
     if (rand < cumulative) {
-      return { label: SEGMENTS[i].label, segmentIndex: i };
+      return { label: segments[i].label, segmentIndex: i };
     }
   }
   return {
-    label: SEGMENTS[SEGMENTS.length - 1].label,
-    segmentIndex: SEGMENTS.length - 1,
+    label: segments[segments.length - 1].label,
+    segmentIndex: segments.length - 1,
   };
+}
+
+export function pickResult(): { label: string; segmentIndex: number } {
+  return pickFromSegments(SEGMENTS);
+}
+
+export function pickResultForVariant(variant?: string): { label: string; segmentIndex: number } {
+  if (variant === "swe") return pickFromSegments(SWE_SEGMENTS);
+  return pickFromSegments(SEGMENTS);
 }

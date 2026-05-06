@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabase } from "@/lib/supabase";
-import { pickResult } from "@/lib/segments";
+import { pickResultForVariant } from "@/lib/segments";
 import { appendRow } from "@/lib/sheets";
 
 export async function POST(req: NextRequest) {
   try {
-    const { email } = await req.json();
+    const { email, variant } = await req.json();
 
     if (!email || typeof email !== "string") {
       return NextResponse.json({ error: "Invalid email" }, { status: 400 });
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Pick result server-side
-    const { label, segmentIndex } = pickResult();
+    const { label, segmentIndex } = pickResultForVariant(variant);
 
     // Save to database
     const { error } = await supabase.from("spins").insert({

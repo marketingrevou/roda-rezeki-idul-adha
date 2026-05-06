@@ -1,17 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
-import { SEGMENTS } from "@/lib/segments";
+import { SEGMENTS, SWE_SEGMENTS } from "@/lib/segments";
 
 interface WheelProps {
   targetIndex: number | null;
   spinning: boolean;
   freeSpin: boolean;
   onSpinComplete: () => void;
+  variant?: string;
 }
 
 const FULL_CIRCLE = Math.PI * 2;
-const SEGMENT_ANGLE = FULL_CIRCLE / SEGMENTS.length;
 const GOLD = "#FFDE3D";
 const SPIN_DURATION = 5000;
 const FULL_ROTATIONS = 7;
@@ -21,16 +21,30 @@ function easeOut(t: number): number {
   return 1 - Math.pow(1 - t, 3);
 }
 
-/** Split "Diskon 30% + BNSP" → { big: "30%", small: "BNSP" } */
+/** Split label into up to two lines for rendering on the wheel.
+ *  "Diskon 30% + BNSP"      → { big: "30%",     small: "BNSP" }
+ *  "Jaminan refund 6 juta"  → { big: "6 juta",  small: "Jaminan refund" }
+ *  Other                    → { big: label,      small: "" }
+ */
 function parseLabel(label: string): { big: string; small: string } {
-  const match = label.match(/(\d+%)/);
-  if (!match) return { big: label, small: "" };
-  const pct = match[1];
-  const rest = label.replace(`Diskon ${pct}`, "").replace(/^\s*\+\s*/, "").trim();
-  return { big: pct, small: rest };
+  // Pattern: "Diskon XX% + rest"
+  const discountMatch = label.match(/(\d+%)/);
+  if (discountMatch) {
+    const pct = discountMatch[1];
+    const rest = label.replace(`Diskon ${pct}`, "").replace(/^\s*\+\s*/, "").trim();
+    return { big: pct, small: rest };
+  }
+  // Pattern: "Jaminan refund X juta"
+  const jaminanMatch = label.match(/^(Jaminan refund)\s+(.+)$/);
+  if (jaminanMatch) {
+    return { big: jaminanMatch[2], small: jaminanMatch[1] };
+  }
+  return { big: label, small: "" };
 }
 
-export default function Wheel({ targetIndex, spinning, freeSpin, onSpinComplete }: WheelProps) {
+export default function Wheel({ targetIndex, spinning, freeSpin, onSpinComplete, variant }: WheelProps) {
+  const segments = variant === "swe" ? SWE_SEGMENTS : SEGMENTS;
+  const SEGMENT_ANGLE = FULL_CIRCLE / segments.length;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const currentAngleRef = useRef(0);
   const animRef = useRef<number | null>(null);
@@ -63,7 +77,7 @@ export default function Wheel({ targetIndex, spinning, freeSpin, onSpinComplete 
     ctx.fill();
 
     // Draw segments
-    SEGMENTS.forEach((seg, i) => {
+    segments.forEach((seg, i) => {
       const startAngle = angle + i * SEGMENT_ANGLE - Math.PI / 2;
       const endAngle = startAngle + SEGMENT_ANGLE;
       const midAngle = startAngle + SEGMENT_ANGLE / 2;
@@ -110,7 +124,7 @@ export default function Wheel({ targetIndex, spinning, freeSpin, onSpinComplete 
     const smallSize = size < 320 ? 10 : size < 400 ? 11 : 13;
     const textRadius = radius * 0.78;
 
-    SEGMENTS.forEach((seg, i) => {
+    segments.forEach((seg, i) => {
       const startAngle = angle + i * SEGMENT_ANGLE - Math.PI / 2;
       const { big, small } = parseLabel(seg.label);
 
@@ -193,7 +207,7 @@ export default function Wheel({ targetIndex, spinning, freeSpin, onSpinComplete 
     ctx.strokeStyle = "rgba(255, 222, 61, 0.3)";
     ctx.lineWidth = 1;
     ctx.stroke();
-  }, []);
+  }, [segments, SEGMENT_ANGLE]);
 
   // Initial draw — wait for Poppins to load
   useEffect(() => {
