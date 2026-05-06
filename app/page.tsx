@@ -19,10 +19,6 @@ const STARS = [
   { top: "72%", left: "50%", duration: "2.8s", delay: "1.2s", size: "2px" },
 ];
 
-// Fade the white bg of Lantern1.png into the dark background
-const LANTERN_MASK =
-  "radial-gradient(ellipse 60% 78% at 50% 55%, black 28%, transparent 82%)";
-
 function validateEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -76,9 +72,9 @@ export default function LandingPage() {
     <main
       className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden"
       style={{
-        // Royal blue matching the reference — radial vignette lighter in center
+        // Forest green Idul Adha vignette
         background:
-          "radial-gradient(ellipse at 50% 38%, #1e4f8c 0%, #0e3270 30%, #071d4a 65%, #040e28 100%)",
+          "radial-gradient(ellipse at 50% 38%, #1a4a20 0%, #0d2e10 35%, #061408 65%, #020a02 100%)",
       }}
     >
       {/* ── Stars ── */}
@@ -97,7 +93,7 @@ export default function LandingPage() {
         />
       ))}
 
-      {/* ── Vector.png — large centered mandala, faded ── */}
+      {/* ── StarPattern.webp — Islamic geometric pattern, faded ── */}
       <div
         className="fixed pointer-events-none"
         style={{
@@ -108,57 +104,53 @@ export default function LandingPage() {
         }}
       >
         <Image
-          src="/images/Vector.png"
+          src="/images/StarPattern.webp"
           alt=""
           width={680}
           height={680}
           className="object-contain"
-          style={{ opacity: 0.1 }}
+          style={{ opacity: 0.08 }}
         />
       </div>
 
-      {/* ── Lantern LEFT — large, primary ── */}
+      {/* ── Ketupat LEFT — large decoration ── */}
       <div
-        className="fixed top-0 w-[80px] sm:w-[148px] lantern-sway pointer-events-none"
+        className="fixed top-0 w-[80px] sm:w-[148px] ketupat-sway pointer-events-none"
         style={{ left: 0, zIndex: 3, animationDuration: "4.4s" }}
       >
         <Image
-          src="/images/Lantern1.png"
+          src="/images/Ketupat.webp"
           alt=""
           width={148}
           height={370}
           style={{
             width: "100%",
             height: "auto",
-            maskImage: LANTERN_MASK,
-            WebkitMaskImage: LANTERN_MASK,
             opacity: 0.92,
           }}
         />
       </div>
 
-      {/* ── Lantern LEFT-CENTER — smaller, offset right ── */}
+      {/* ── Ketupat LEFT-CENTER — smaller decoration ── */}
       <div
-        className="fixed top-0 hidden sm:block lantern-sway pointer-events-none"
+        className="fixed top-0 hidden sm:block ketupat-sway pointer-events-none"
         style={{ left: "148px", zIndex: 3, animationDuration: "5.6s", animationDelay: "0.8s" }}
       >
         <Image
-          src="/images/Lantern1.png"
+          src="/images/Ketupat.webp"
           alt=""
           width={108}
           height={270}
           className="object-contain"
           style={{
-            maskImage: LANTERN_MASK,
-            WebkitMaskImage: LANTERN_MASK,
             opacity: 0.72,
           }}
         />
       </div>
 
-      {/* ── Lantern RIGHT — large, mirrored ── */}
+      {/* ── Ketupat RIGHT — large decoration, mirrored ── */}
       <div
-        className="fixed top-0 w-[80px] sm:w-[148px] lantern-sway pointer-events-none"
+        className="fixed top-0 w-[80px] sm:w-[148px] ketupat-sway pointer-events-none"
         style={{
           right: 0,
           zIndex: 3,
@@ -169,23 +161,21 @@ export default function LandingPage() {
         }}
       >
         <Image
-          src="/images/Lantern1.png"
+          src="/images/Ketupat.webp"
           alt=""
           width={148}
           height={370}
           style={{
             width: "100%",
             height: "auto",
-            maskImage: LANTERN_MASK,
-            WebkitMaskImage: LANTERN_MASK,
             opacity: 0.88,
           }}
         />
       </div>
 
-      {/* ── Lantern RIGHT-CENTER — smaller, inner, mirrored ── */}
+      {/* ── Ketupat RIGHT-CENTER — smaller decoration, mirrored ── */}
       <div
-        className="fixed top-0 hidden sm:block lantern-sway pointer-events-none"
+        className="fixed top-0 hidden sm:block ketupat-sway pointer-events-none"
         style={{
           right: "148px",
           zIndex: 3,
@@ -196,15 +186,30 @@ export default function LandingPage() {
         }}
       >
         <Image
-          src="/images/Lantern1.png"
+          src="/images/Ketupat.webp"
           alt=""
           width={108}
           height={270}
           className="object-contain"
           style={{
-            maskImage: LANTERN_MASK,
-            WebkitMaskImage: LANTERN_MASK,
             opacity: 0.68,
+          }}
+        />
+      </div>
+
+      {/* ── Goat accent top-right ── */}
+      <div
+        className="fixed hidden sm:block pointer-events-none"
+        style={{ top: "15%", right: "5%", zIndex: 3 }}
+      >
+        <Image
+          src="/images/Goat.webp"
+          alt=""
+          width={120}
+          height={120}
+          className="object-contain"
+          style={{
+            opacity: 0.25,
           }}
         />
       </div>
@@ -245,7 +250,7 @@ export default function LandingPage() {
             className="font-cinzel text-xs tracking-widest uppercase"
             style={{ color: "#FFDE3D", opacity: 0.65, letterSpacing: "0.26em" }}
           >
-            Ramadan Special 2026
+            Idul Adha Special 2026
           </p>
         </div>
 
@@ -329,6 +334,24 @@ export default function LandingPage() {
         >
           Setiap email hanya bisa putar 1 kali · S&K berlaku
         </p>
+      </div>
+
+      {/* ── Mosque silhouette at bottom ── */}
+      <div
+        className="fixed bottom-0 w-full mosque-fade pointer-events-none"
+        style={{ left: 0, zIndex: 2 }}
+      >
+        <Image
+          src="/images/Mosque.webp"
+          alt=""
+          width={1200}
+          height={300}
+          style={{
+            width: "100%",
+            height: "auto",
+            opacity: 0.15,
+          }}
+        />
       </div>
     </main>
   );

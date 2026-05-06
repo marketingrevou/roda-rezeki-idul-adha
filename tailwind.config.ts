@@ -9,9 +9,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        navy: "#0f0a2e",
+        navy: "#0a1f0a",
         gold: "#FFDE3D",
         "gold-dark": "#B8860B",
+        cream: "#F5E6C8",
       },
       fontFamily: {
         poppins: ["var(--font-poppins)", "Poppins", "sans-serif"],

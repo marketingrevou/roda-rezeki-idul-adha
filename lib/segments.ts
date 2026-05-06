@@ -15,25 +15,25 @@ export const SEGMENTS: Segment[] = [
   {
     label: "Diskon 40%",
     probability: 0,
-    color: "#0a4a62",
+    color: "#1a5c1a",
     textColor: "#FFDE3D",
   },
   {
     label: "Diskon 30% + BNSP",
     probability: 0,
-    color: "#0e2255",
+    color: "#0d3b0d",
     textColor: "#FFDE3D",
   },
   {
     label: "Diskon 30% + AI Video",
     probability: 25,
-    color: "#1a3575",
+    color: "#2d5a1a",
     textColor: "#FFDE3D",
   },
   {
     label: "Diskon 25% + BNSP + AI Video",
     probability: 75,
-    color: "#0d3a52",
+    color: "#1a4010",
     textColor: "#FFDE3D",
   },
 ];

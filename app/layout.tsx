@@ -27,8 +27,8 @@ const pacifico = Pacifico({
 });
 
 export const metadata: Metadata = {
-  title: "Roda Rezeki RevoU — Ramadan Special",
-  description: "Putar roda keberuntungan dan dapatkan bonus spesial Ramadan dari RevoU!",
+  title: "Roda Rezeki RevoU — Idul Adha Special",
+  description: "Putar roda keberuntungan dan dapatkan bonus spesial Idul Adha dari RevoU!",
   icons: [
     { rel: "icon", url: "/revoulogo.png" },
     // Keep default favicon.ico as fallback if necessary

@@ -21,7 +21,7 @@ export default function ResultDisplay({ result, email, onClose }: ResultDisplayP
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-4"
-      style={{ backgroundColor: "rgba(15, 10, 46, 0.92)" }}
+      style={{ backgroundColor: "rgba(5, 15, 5, 0.92)" }}
     >
       {/* Floating stars */}
       {[...Array(8)].map((_, i) => (
@@ -42,7 +42,7 @@ export default function ResultDisplay({ result, email, onClose }: ResultDisplayP
       <div
         className="relative w-full max-w-md rounded-2xl p-8 text-center"
         style={{
-          background: "linear-gradient(135deg, #1a0a3e 0%, #0f1e3a 50%, #1a0a3e 100%)",
+          background: "linear-gradient(135deg, #0a1f0a 0%, #0d2e0d 50%, #0a1f0a 100%)",
           border: "2px solid #FFDE3D",
           boxShadow: "0 0 40px rgba(255, 222, 61, 0.4), 0 20px 60px rgba(0,0,0,0.6)",
           transform: visible ? "scale(1) translateY(0)" : "scale(0.8) translateY(20px)",
@@ -68,7 +68,7 @@ export default function ResultDisplay({ result, email, onClose }: ResultDisplayP
             boxShadow: "0 0 20px rgba(255, 222, 61, 0.6)",
           }}
         >
-          <Gift size={32} className="text-[#0f0a2e]" />
+          <Gift size={32} className="text-[#0a1f0a]" />
         </div>
 
         {/* Selamat */}
@@ -102,13 +102,13 @@ export default function ResultDisplay({ result, email, onClose }: ResultDisplayP
 
         <p className="text-xs text-blue-300 mb-6 leading-relaxed">
           Hubungi tim RevoU untuk menggunakan bonusmu.<br />
-          Ramadan Mubarak! ☪️
+          Selamat Idul Adha! 🐑
         </p>
 
         {onClose && (
           <button
             onClick={onClose}
-            className="w-full py-3 rounded-xl font-bold text-[#0f0a2e] transition-all hover:brightness-110 active:scale-95"
+            className="w-full py-3 rounded-xl font-bold text-[#0a1f0a] transition-all hover:brightness-110 active:scale-95"
             style={{
               background: "linear-gradient(135deg, #FFDE3D, #FFB800)",
               boxShadow: "0 4px 15px rgba(255, 222, 61, 0.4)",

@@ -80,8 +80,8 @@ export default function Wheel({ targetIndex, spinning, freeSpin, onSpinComplete 
         const outerX = cx + Math.cos(midAngle) * radius;
         const outerY = cy + Math.sin(midAngle) * radius;
         const jackpotGrad = ctx.createLinearGradient(innerX, innerY, outerX, outerY);
-        jackpotGrad.addColorStop(0, "#9a3d00");
-        jackpotGrad.addColorStop(1, "#FF8C00");
+        jackpotGrad.addColorStop(0, "#7a2e00");
+        jackpotGrad.addColorStop(1, "#d4600a");
         ctx.fillStyle = jackpotGrad;
       } else {
         ctx.fillStyle = seg.color;
@@ -97,9 +97,9 @@ export default function Wheel({ targetIndex, spinning, freeSpin, onSpinComplete 
 
     // Depth overlay: darker at center, adds 3D feel
     const depthGradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-    depthGradient.addColorStop(0, "rgba(0, 0, 20, 0.5)");
-    depthGradient.addColorStop(0.4, "rgba(0, 0, 10, 0.18)");
-    depthGradient.addColorStop(1, "rgba(30, 80, 160, 0.04)");
+    depthGradient.addColorStop(0, "rgba(0, 20, 0, 0.5)");
+    depthGradient.addColorStop(0.4, "rgba(0, 20, 0, 0.18)");
+    depthGradient.addColorStop(1, "rgba(0, 80, 0, 0.04)");
     ctx.beginPath();
     ctx.arc(cx, cy, radius, 0, FULL_CIRCLE);
     ctx.fillStyle = depthGradient;
@@ -162,10 +162,10 @@ export default function Wheel({ targetIndex, spinning, freeSpin, onSpinComplete 
     ctx.stroke();
 
     // Glassmorphic center button
-    // Dark navy base
+    // Dark forest green base
     ctx.beginPath();
     ctx.arc(cx, cy, 30, 0, FULL_CIRCLE);
-    ctx.fillStyle = "#071d4a";
+    ctx.fillStyle = "#071d07";
     ctx.fill();
 
     // Glass shimmer arc (top-left highlight)
