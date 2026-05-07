@@ -30,9 +30,8 @@ export const metadata: Metadata = {
   title: "Roda Rezeki RevoU — Idul Adha Special",
   description: "Putar roda keberuntungan dan dapatkan bonus spesial Idul Adha dari RevoU!",
   icons: [
-    { rel: "icon", url: "/revoulogo.png" },
-    // Keep default favicon.ico as fallback if necessary
-    { rel: "icon", url: "/favicon.ico", type: "image/x-icon" },
+    { rel: "icon", url: "/revoulogo.png", type: "image/png" },
+    { rel: "apple-touch-icon", url: "/revoulogo.png" },
   ],
 };
 
