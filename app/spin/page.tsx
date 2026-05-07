@@ -23,8 +23,7 @@ const STARS = [
   { top: "72%", left: "50%", duration: "2.8s", delay: "1.2s", size: "2px" },
 ];
 
-const BG =
-  "radial-gradient(ellipse at 50% 38%, #1a4a20 0%, #0d2e10 35%, #061408 65%, #020a02 100%)";
+const BG_STYLE = { backgroundColor: "#053805" };
 
 export default function SpinPage() {
   const router = useRouter();
@@ -96,7 +95,7 @@ export default function SpinPage() {
 
   if (!email) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: BG }}>
+      <div className="min-h-screen flex items-center justify-center" style={BG_STYLE}>
         <div className="w-8 h-8 rounded-full border-2 border-t-transparent border-yellow-400 animate-spin" />
       </div>
     );
@@ -105,8 +104,22 @@ export default function SpinPage() {
   return (
     <main
       className="relative min-h-screen flex flex-col items-center justify-center px-4 py-8 overflow-hidden"
-      style={{ background: BG }}
+      style={BG_STYLE}
     >
+      {/* ── Mosque background ── */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{ zIndex: 1 }}
+      >
+        <Image
+          src="/images/Mosque2.png"
+          alt=""
+          fill
+          className="object-contain object-center"
+          style={{ opacity: 0.85, transform: "scale(1.6)" }}
+        />
+      </div>
+
       {/* ── Stars ── */}
       {STARS.map((star, i) => (
         <div
@@ -123,111 +136,7 @@ export default function SpinPage() {
         />
       ))}
 
-      {/* ── StarPattern.webp — Islamic geometric pattern, faded ── */}
-      <div
-        className="fixed pointer-events-none"
-        style={{
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -52%)",
-          zIndex: 1,
-        }}
-      >
-        <Image
-          src="/images/StarPattern.webp"
-          alt=""
-          width={680}
-          height={680}
-          className="object-contain"
-          style={{ opacity: 0.08 }}
-        />
-      </div>
-
-      {/* ── Ketupat LEFT — large decoration ── */}
-      <div
-        className="fixed top-0 w-[80px] sm:w-[148px] ketupat-sway pointer-events-none"
-        style={{ left: 0, zIndex: 3, animationDuration: "4.4s" }}
-      >
-        <Image
-          src="/images/Ketupat.webp"
-          alt=""
-          width={148}
-          height={370}
-          style={{
-            width: "100%",
-            height: "auto",
-            opacity: 0.92,
-          }}
-        />
-      </div>
-
-      {/* ── Ketupat LEFT-CENTER — smaller decoration ── */}
-      <div
-        className="fixed top-0 hidden sm:block ketupat-sway pointer-events-none"
-        style={{ left: "148px", zIndex: 3, animationDuration: "5.6s", animationDelay: "0.8s" }}
-      >
-        <Image
-          src="/images/Ketupat.webp"
-          alt=""
-          width={108}
-          height={270}
-          className="object-contain"
-          style={{
-            opacity: 0.72,
-          }}
-        />
-      </div>
-
-      {/* ── Ketupat RIGHT — large decoration, mirrored ── */}
-      <div
-        className="fixed top-0 w-[80px] sm:w-[148px] ketupat-sway pointer-events-none"
-        style={{
-          right: 0,
-          zIndex: 3,
-          animationDuration: "4.8s",
-          animationDelay: "1.4s",
-          transform: "scaleX(-1)",
-          transformOrigin: "top center",
-        }}
-      >
-        <Image
-          src="/images/Ketupat.webp"
-          alt=""
-          width={148}
-          height={370}
-          style={{
-            width: "100%",
-            height: "auto",
-            opacity: 0.88,
-          }}
-        />
-      </div>
-
-      {/* ── Ketupat RIGHT-CENTER — smaller decoration, mirrored ── */}
-      <div
-        className="fixed top-0 hidden sm:block ketupat-sway pointer-events-none"
-        style={{
-          right: "148px",
-          zIndex: 3,
-          animationDuration: "5.4s",
-          animationDelay: "2.1s",
-          transform: "scaleX(-1)",
-          transformOrigin: "top center",
-        }}
-      >
-        <Image
-          src="/images/Ketupat.webp"
-          alt=""
-          width={108}
-          height={270}
-          className="object-contain"
-          style={{
-            opacity: 0.68,
-          }}
-        />
-      </div>
-
-      {/* ── Main content ── */}
+{/* ── Main content ── */}
       <div className="relative w-full max-w-lg flex flex-col items-center gap-5" style={{ zIndex: 10 }}>
 
         {/* Logo */}
@@ -340,40 +249,36 @@ export default function SpinPage() {
         />
       )}
 
-      {/* ── Mosque silhouette at bottom ── */}
+      {/* ── Cow — bottom left ── */}
       <div
-        className="fixed bottom-0 w-full mosque-fade pointer-events-none"
-        style={{ left: 0, zIndex: 2 }}
+        className="hidden sm:block fixed bottom-0 pointer-events-none"
+        style={{ left: 0, zIndex: 3 }}
       >
         <Image
-          src="/images/Mosque.webp"
+          src="/images/cow.png"
           alt=""
-          width={1200}
-          height={300}
-          style={{
-            width: "100%",
-            height: "auto",
-            opacity: 0.15,
-          }}
+          width={280}
+          height={220}
+          className="object-contain object-bottom"
+          style={{ opacity: 1 }}
         />
       </div>
 
-      {/* ── Goat accent top-right ── */}
+      {/* ── Goat — bottom right ── */}
       <div
-        className="fixed hidden sm:block pointer-events-none"
-        style={{ top: "15%", right: "5%", zIndex: 3 }}
+        className="hidden sm:block fixed bottom-0 pointer-events-none"
+        style={{ right: 0, zIndex: 3 }}
       >
         <Image
-          src="/images/Goat.webp"
+          src="/images/goat.png"
           alt=""
-          width={120}
-          height={120}
-          className="object-contain"
-          style={{
-            opacity: 0.25,
-          }}
+          width={220}
+          height={220}
+          className="object-contain object-bottom"
+          style={{ opacity: 1 }}
         />
       </div>
+
     </main>
   );
 }

@@ -2,7 +2,17 @@
   "permissions": {
     "allow": [
       "Bash(node:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(git remote *)",
+      "Bash(Start-Sleep -Seconds 4)",
+      "Bash(Write-Output \"Done waiting\")",
+      "mcp__replicate__search",
+      "mcp__replicate__list_models_versions",
+      "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\(\"C:\\\\Users\\\\Lenovo\\\\Documents\\\\02_RevoU\\\\01. AI Apps\\\\10. 3R\\\\3R\\\\roda-rezeki-idul-adha-2\\\\public\\\\images\\\\Ketupat.webp\"\\); $b64 = [Convert]::ToBase64String\\($bytes\\); Write-Output \"data:image/webp;base64,$b64\")",
+      "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\(\"C:\\\\Users\\\\Lenovo\\\\Documents\\\\02_RevoU\\\\01. AI Apps\\\\10. 3R\\\\3R\\\\roda-rezeki-idul-adha-2\\\\public\\\\images\\\\Ketupat.webp\"\\); $b64 = [Convert]::ToBase64String\\($bytes\\); [System.IO.File]::WriteAllText\\(\"C:\\\\tmp\\\\ketupat_b64.txt\", \"data:image/webp;base64,$b64\"\\); Write-Output \"Saved\")",
+      "PowerShell(python -c \"import json; d=json.load\\(open\\('C:/Users/Lenovo/.claude.json'\\)\\); mcps=d.get\\('mcpServers',{}\\); [print\\(k,'->',json.dumps\\(v,indent=2\\)\\) for k,v in mcps.items\\(\\) if 'replicate' in k.lower\\(\\)]\")",
+      "Bash(Remove-Item *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
