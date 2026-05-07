@@ -42,20 +42,28 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
   return allLines.length ? allLines : [text];
 }
 
-function parseLabel(label: string): { big: string; small: string } {
+function parseLabel(label: string): { top: string; big: string; bottom: string } {
   const discountMatch = label.match(/Diskon\s+(\d+%)/);
-  if (discountMatch) return { big: discountMatch[1], small: "" };
-  const jaminanMatch = label.match(/^(Jaminan [Rr]efund)\s+(.+)$/i);
-  if (jaminanMatch) return { big: jaminanMatch[2], small: jaminanMatch[1] };
+  if (discountMatch) return { top: "", big: discountMatch[1], bottom: "" };
+
+  // "Jaminan Refund X juta [+ AI video learning]"
+  // top: "Jaminan Refund", big: amount, bottom: extra offer if any
+  const jaminanMatch = label.match(/^Jaminan [Rr]efund\s+([\d.]+\s*juta)(.*)?$/i);
+  if (jaminanMatch) {
+    const amount = jaminanMatch[1].trim();
+    const extra = (jaminanMatch[2] ?? "").trim();
+    return { top: "Jaminan Refund", big: amount, bottom: extra ? "+ AI Video" : "" };
+  }
+
   const bnspMatch = label.match(/^(BNSP)\s*\+\s*(.+)$/);
   if (bnspMatch) {
     const parts = bnspMatch[2].split(/\s*\+\s*/);
-    const small = parts
+    const bottom = parts
       .map(p => "+ " + p.replace("AI Free Learning", "AI Learning").replace("Starter Kit", "Starter Kit").trim())
       .join("|");
-    return { big: "BNSP", small };
+    return { top: "", big: "BNSP", bottom };
   }
-  return { big: label, small: "" };
+  return { top: "", big: label, bottom: "" };
 }
 
 export default function Wheel({ targetIndex, spinning, freeSpin, onSpinComplete, variant }: WheelProps) {
@@ -144,20 +152,27 @@ export default function Wheel({ targetIndex, spinning, freeSpin, onSpinComplete,
 
     segments.forEach((seg, i) => {
       const startAngle = angle + i * SEGMENT_ANGLE - Math.PI / 2;
-      const { big, small } = parseLabel(seg.label);
+      const { top, big, bottom } = parseLabel(seg.label);
       const midAngle = startAngle + SEGMENT_ANGLE / 2;
       const normMid = ((midAngle % FULL_CIRCLE) + FULL_CIRCLE) % FULL_CIRCLE;
       const isFlipped = normMid > Math.PI / 2 && normMid < Math.PI * 1.5;
 
-      // Wrap small text before entering save/rotate so measureText uses plain state
+      // Pre-wrap all text before save/rotate so measureText uses unrotated state
       ctx.font = `800 ${smallSize}px Poppins, sans-serif`;
-      const smallLines = small ? wrapText(ctx, small, smallMaxWidth) : [];
+      const topLines = top ? wrapText(ctx, top, smallMaxWidth) : [];
+      const bottomLines = bottom ? wrapText(ctx, bottom, smallMaxWidth) : [];
 
-      const totalH = bigSize
-        + (smallLines.length > 0
-          ? lineGap + smallLines.length * smallSize + (smallLines.length - 1) * lineGap
-          : 0);
+      const topH = topLines.length > 0
+        ? topLines.length * smallSize + (topLines.length - 1) * lineGap
+        : 0;
+      const bottomH = bottomLines.length > 0
+        ? bottomLines.length * smallSize + (bottomLines.length - 1) * lineGap
+        : 0;
+      const totalH = topH + (topH > 0 ? lineGap : 0) + bigSize + (bottomH > 0 ? lineGap : 0) + bottomH;
       const baseY = -totalH / 2;
+
+      const bigY = baseY + topH + (topH > 0 ? lineGap : 0) + bigSize * 0.75;
+      const bottomStartY = baseY + topH + (topH > 0 ? lineGap : 0) + bigSize + lineGap;
 
       ctx.save();
 
@@ -173,42 +188,37 @@ export default function Wheel({ targetIndex, spinning, freeSpin, onSpinComplete,
       ctx.shadowColor = "rgba(0, 0, 0, 0.85)";
       ctx.shadowBlur = 5;
 
-      if (isFlipped) {
-        ctx.rotate(midAngle + Math.PI);
+      // Center text between the hub (r≈30) and the rim
+      const textCenter = (30 + textRadius) / 2;
+      const xPos = isFlipped ? -textCenter : textCenter;
+      const textAlign: CanvasTextAlign = "center";
+      ctx.rotate(isFlipped ? midAngle + Math.PI : midAngle);
+      ctx.textAlign = textAlign;
 
-        ctx.font = `800 ${bigSize}px Poppins, sans-serif`;
-        ctx.textAlign = "left";
-        ctx.fillText(big, -textRadius, baseY + bigSize * 0.75);
+      // Top small lines (e.g. "Jaminan Refund")
+      if (topLines.length > 0) {
+        ctx.font = `800 ${smallSize}px Poppins, sans-serif`;
+        ctx.globalAlpha = 0.82;
+        topLines.forEach((line, li) => {
+          const y = baseY + li * (smallSize + lineGap) + smallSize * 0.75;
+          ctx.fillText(line, xPos, y);
+        });
+        ctx.globalAlpha = 1;
+      }
 
-        if (smallLines.length > 0) {
-          const bigW = ctx.measureText(big).width;
-          ctx.font = `800 ${smallSize}px Poppins, sans-serif`;
-          ctx.globalAlpha = 0.82;
-          smallLines.forEach((line, li) => {
-            const y = baseY + bigSize + lineGap + li * (smallSize + lineGap) + smallSize * 0.75;
-            const smallW = ctx.measureText(line).width;
-            ctx.fillText(line, -textRadius + (bigW - smallW) / 2, y);
-          });
-          ctx.globalAlpha = 1;
-        }
-      } else {
-        ctx.rotate(midAngle);
+      // Big (amount) text
+      ctx.font = `800 ${bigSize}px Poppins, sans-serif`;
+      ctx.fillText(big, xPos, bigY);
 
-        ctx.font = `800 ${bigSize}px Poppins, sans-serif`;
-        ctx.textAlign = "right";
-        ctx.fillText(big, textRadius, baseY + bigSize * 0.75);
-
-        if (smallLines.length > 0) {
-          const bigW = ctx.measureText(big).width;
-          ctx.font = `800 ${smallSize}px Poppins, sans-serif`;
-          ctx.globalAlpha = 0.82;
-          smallLines.forEach((line, li) => {
-            const y = baseY + bigSize + lineGap + li * (smallSize + lineGap) + smallSize * 0.75;
-            const smallW = ctx.measureText(line).width;
-            ctx.fillText(line, textRadius - (bigW - smallW) / 2, y);
-          });
-          ctx.globalAlpha = 1;
-        }
+      // Bottom small lines (e.g. "+ AI Video" or BNSP add-ons)
+      if (bottomLines.length > 0) {
+        ctx.font = `800 ${smallSize}px Poppins, sans-serif`;
+        ctx.globalAlpha = 0.82;
+        bottomLines.forEach((line, li) => {
+          const y = bottomStartY + li * (smallSize + lineGap) + smallSize * 0.75;
+          ctx.fillText(line, xPos, y);
+        });
+        ctx.globalAlpha = 1;
       }
 
       ctx.restore();
