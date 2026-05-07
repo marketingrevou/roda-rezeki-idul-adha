@@ -188,8 +188,8 @@ export default function Wheel({ targetIndex, spinning, freeSpin, onSpinComplete,
       ctx.shadowColor = "rgba(0, 0, 0, 0.85)";
       ctx.shadowBlur = 5;
 
-      // Center text between the hub (r≈30) and the rim
-      const textCenter = (30 + textRadius) / 2;
+      // Position text closer to rim — 75% of textRadius
+      const textCenter = textRadius * 0.75;
       const xPos = isFlipped ? -textCenter : textCenter;
       const textAlign: CanvasTextAlign = "center";
       ctx.rotate(isFlipped ? midAngle + Math.PI : midAngle);
