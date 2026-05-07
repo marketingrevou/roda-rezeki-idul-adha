@@ -21,23 +21,39 @@ function easeOut(t: number): number {
   return 1 - Math.pow(1 - t, 3);
 }
 
-/** Split label into up to two lines for rendering on the wheel.
- *  "Diskon 30% + BNSP"      → { big: "30%",     small: "BNSP" }
- *  "Jaminan refund 6 juta"  → { big: "6 juta",  small: "Jaminan refund" }
- *  Other                    → { big: label,      small: "" }
- */
-function parseLabel(label: string): { big: string; small: string } {
-  // Pattern: "Diskon XX% + rest"
-  const discountMatch = label.match(/(\d+%)/);
-  if (discountMatch) {
-    const pct = discountMatch[1];
-    const rest = label.replace(`Diskon ${pct}`, "").replace(/^\s*\+\s*/, "").trim();
-    return { big: pct, small: rest };
+function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
+  // "|" acts as a forced line break between items
+  const paragraphs = text.split("|");
+  const allLines: string[] = [];
+  for (const para of paragraphs) {
+    const words = para.trim().split(/\s+/);
+    let line = "";
+    for (const word of words) {
+      const test = line ? `${line} ${word}` : word;
+      if (ctx.measureText(test).width <= maxWidth) {
+        line = test;
+      } else {
+        if (line) allLines.push(line);
+        line = word;
+      }
+    }
+    if (line) allLines.push(line);
   }
-  // Pattern: "Jaminan refund X juta"
-  const jaminanMatch = label.match(/^(Jaminan refund)\s+(.+)$/);
-  if (jaminanMatch) {
-    return { big: jaminanMatch[2], small: jaminanMatch[1] };
+  return allLines.length ? allLines : [text];
+}
+
+function parseLabel(label: string): { big: string; small: string } {
+  const discountMatch = label.match(/Diskon\s+(\d+%)/);
+  if (discountMatch) return { big: discountMatch[1], small: "" };
+  const jaminanMatch = label.match(/^(Jaminan [Rr]efund)\s+(.+)$/i);
+  if (jaminanMatch) return { big: jaminanMatch[2], small: jaminanMatch[1] };
+  const bnspMatch = label.match(/^(BNSP)\s*\+\s*(.+)$/);
+  if (bnspMatch) {
+    const parts = bnspMatch[2].split(/\s*\+\s*/);
+    const small = parts
+      .map(p => "+ " + p.replace("AI Free Learning", "AI Learning").replace("Starter Kit", "Starter Kit").trim())
+      .join("|");
+    return { big: "BNSP", small };
   }
   return { big: label, small: "" };
 }
@@ -119,43 +135,80 @@ export default function Wheel({ targetIndex, spinning, freeSpin, onSpinComplete,
     ctx.fillStyle = depthGradient;
     ctx.fill();
 
-    // Typographic hierarchy: big % + small detail
     const bigSize = size < 320 ? 18 : size < 400 ? 22 : 26;
     const smallSize = size < 320 ? 10 : size < 400 ? 11 : 13;
     const textRadius = radius * 0.78;
+    // Max width a text line can occupy along the radial direction (rim → hub)
+    const smallMaxWidth = textRadius - 36;
+    const lineGap = 2;
 
     segments.forEach((seg, i) => {
       const startAngle = angle + i * SEGMENT_ANGLE - Math.PI / 2;
       const { big, small } = parseLabel(seg.label);
+      const midAngle = startAngle + SEGMENT_ANGLE / 2;
+      const normMid = ((midAngle % FULL_CIRCLE) + FULL_CIRCLE) % FULL_CIRCLE;
+      const isFlipped = normMid > Math.PI / 2 && normMid < Math.PI * 1.5;
 
-      const gap = 3;
-      const totalH = small ? bigSize + gap + smallSize : bigSize;
+      // Wrap small text before entering save/rotate so measureText uses plain state
+      ctx.font = `800 ${smallSize}px Poppins, sans-serif`;
+      const smallLines = small ? wrapText(ctx, small, smallMaxWidth) : [];
+
+      const totalH = bigSize
+        + (smallLines.length > 0
+          ? lineGap + smallLines.length * smallSize + (smallLines.length - 1) * lineGap
+          : 0);
       const baseY = -totalH / 2;
 
       ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(startAngle + SEGMENT_ANGLE / 2);
-      ctx.textAlign = "right";
 
-      // Big percentage number
-      ctx.font = `800 ${bigSize}px Poppins, sans-serif`;
+      // Clip text to this segment's wedge so it never bleeds into neighbors
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, radius - 2, startAngle, startAngle + SEGMENT_ANGLE);
+      ctx.closePath();
+      ctx.clip();
+
+      ctx.translate(cx, cy);
       ctx.fillStyle = seg.textColor;
       ctx.shadowColor = "rgba(0, 0, 0, 0.85)";
       ctx.shadowBlur = 5;
-      ctx.fillText(big, textRadius, baseY + bigSize * 0.75);
 
-      // Small supporting text (centered under big text rather than right-aligned)
-      if (small) {
-        // measure big width using the big font first
+      if (isFlipped) {
+        ctx.rotate(midAngle + Math.PI);
+
         ctx.font = `800 ${bigSize}px Poppins, sans-serif`;
-        const bigW = ctx.measureText(big).width;
-        // then switch to small font for the label
-        ctx.font = `600 ${smallSize}px Poppins, sans-serif`;
-        ctx.globalAlpha = 0.82;
-        const smallW = ctx.measureText(small).width;
-        const smallX = textRadius - (bigW - smallW) / 2;
-        ctx.fillText(small, smallX, baseY + bigSize + gap + smallSize * 0.75);
-        ctx.globalAlpha = 1;
+        ctx.textAlign = "left";
+        ctx.fillText(big, -textRadius, baseY + bigSize * 0.75);
+
+        if (smallLines.length > 0) {
+          const bigW = ctx.measureText(big).width;
+          ctx.font = `800 ${smallSize}px Poppins, sans-serif`;
+          ctx.globalAlpha = 0.82;
+          smallLines.forEach((line, li) => {
+            const y = baseY + bigSize + lineGap + li * (smallSize + lineGap) + smallSize * 0.75;
+            const smallW = ctx.measureText(line).width;
+            ctx.fillText(line, -textRadius + (bigW - smallW) / 2, y);
+          });
+          ctx.globalAlpha = 1;
+        }
+      } else {
+        ctx.rotate(midAngle);
+
+        ctx.font = `800 ${bigSize}px Poppins, sans-serif`;
+        ctx.textAlign = "right";
+        ctx.fillText(big, textRadius, baseY + bigSize * 0.75);
+
+        if (smallLines.length > 0) {
+          const bigW = ctx.measureText(big).width;
+          ctx.font = `800 ${smallSize}px Poppins, sans-serif`;
+          ctx.globalAlpha = 0.82;
+          smallLines.forEach((line, li) => {
+            const y = baseY + bigSize + lineGap + li * (smallSize + lineGap) + smallSize * 0.75;
+            const smallW = ctx.measureText(line).width;
+            ctx.fillText(line, textRadius - (bigW - smallW) / 2, y);
+          });
+          ctx.globalAlpha = 1;
+        }
       }
 
       ctx.restore();
