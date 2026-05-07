@@ -40,31 +40,31 @@ export const SEGMENTS: Segment[] = [
 
 export const SWE_SEGMENTS: Segment[] = [
   {
-    label: "Jaminan refund 6 juta",
-    probability: 10,
+    label: "Jaminan Refund 3 juta",
+    probability: 40,
     color: "#E8730A",
     textColor: "#FFDE3D",
   },
   {
-    label: "Jaminan refund 4.5 juta",
-    probability: 30,
+    label: "Jaminan Refund 3 juta + AI video learning",
+    probability: 40,
     color: "#1a5c1a",
     textColor: "#FFDE3D",
   },
   {
-    label: "Jaminan refund 3 juta",
-    probability: 60,
+    label: "Jaminan Refund 3.5 juta",
+    probability: 10,
     color: "#0d3b0d",
     textColor: "#FFDE3D",
   },
   {
-    label: "Diskon 50%",
-    probability: 0,
+    label: "Jaminan Refund 3.5 juta + AI video learning",
+    probability: 10,
     color: "#2d5a1a",
     textColor: "#FFDE3D",
   },
   {
-    label: "BNSP",
+    label: "Jaminan Refund 4 juta",
     probability: 0,
     color: "#1a4010",
     textColor: "#FFDE3D",
